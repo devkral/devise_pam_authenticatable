@@ -41,14 +41,16 @@ In your Devise model, ensure the following is present:
     end
 
 pam_service: "system-auth" is optional. By default the pam service specified in config.pam_default_service is used.
+
 pam_suffix: "foo" is optional. By default the pam email extraction suffix specified in config.pam_default_suffix is used.
 
 Options:
-  config.pam_default_service = "rpam"
-  config.pam_default_suffix = nil # extraction disabled by default
-  #config.pam_default_suffix = "pam" # username@pam = username
-  config.emailfield = "email" # set emailfield
-  config.usernamefield = "username" # set to nil to disable username (only email extraction)
+
+* config.pam_default_service = "rpam"
+* config.pam_default_suffix = nil # extraction disabled by default
+* config.pam_default_suffix = "pam" # username@pam = username
+* config.emailfield = "email" # set emailfield
+* config.usernamefield = "username" # set to nil to disable username (only email extraction)
 
 References
 ----------
