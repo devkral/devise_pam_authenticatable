@@ -25,13 +25,13 @@ end
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "devise_pam_authenticatable"
+    gemspec.name = "devise_pam_authenticatable2"
     gemspec.summary = "Devise PAM authentication module using rpam2"
     gemspec.description = "For authenticating against PAM (Pluggable Authentication Modules)"
-    gemspec.email = "jwilson@lithiumcorp.com"
-    gemspec.homepage = "http://github.com/jwilson511/devise_pam_authenticatable"
+    gemspec.email = "devkral@web.de"
+    gemspec.homepage = "http://github.com/devkral/devise_pam_authenticatable2"
     gemspec.license = "MIT"
-    gemspec.authors = ["James Wilson"]
+    gemspec.authors = ["James Wilson", "Alexander Kaftan"]
     gemspec.add_runtime_dependency "devise", ">= 4.0.0"
     gemspec.add_runtime_dependency "rpam2", "~> 3.0"
   end

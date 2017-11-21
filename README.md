@@ -17,11 +17,11 @@ Installation
 
 In the Gemfile for your application:
 
-    gem "devise\_pam\_authenticatable"
+    gem "devise\_pam\_authenticatable2"
 
 Or, to use the latest from github:
 
-    gem "devise_pam_authenticatable", :git => "git://github.com/jwilson511/devise_pam_authenticatable.git"
+    gem "devise_pam_authenticatable2", :git => "git://github.com/devkral/devise_pam_authenticatable2.git"
 
 Setup
 -----
