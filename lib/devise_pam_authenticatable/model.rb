@@ -20,11 +20,13 @@ module Devise
       end
 
       def get_service
-        if self.class.instance_variable_defined?("@pam_service")
-          return self.class.pam_service
-        else
-          return ::Devise::pam_default_service
-        end
+        return self.class.pam_service if self.class.instance_variable_defined?("@pam_service")
+        ::Devise::pam_default_service
+      end
+
+      def get_suffix
+        return self.class.pam_suffix if self.class.instance_variable_defined?("@pam_suffix")
+        ::Devise::pam_default_suffix
       end
 
       def pam_setup(attributes)
@@ -36,17 +38,10 @@ module Devise
         return false
       end
 
-      def get_suffix
-        return self.class.pam_suffix if self.class.instance_variable_defined?("@pam_suffix")
-        ::Devise::pam_default_suffix
-      end
-
       def get_pam_name
-        return self[::Devise::usernamefield] if ::Devise::usernamefield && \
-                                                has_attribute?(::Devise::usernamefield) && \
-                                                attribute_present?(::Devise::usernamefield)
+        return self[::Devise::usernamefield] if ::Devise::usernamefield
         suffix = get_suffix()
-        return nil unless suffix && has_attribute?(::Devise::emailfield)
+        return nil unless suffix && ::Devise::emailfield
         email = "#{self[::Devise::emailfield]}\n"
         pos = email.index("@#{suffix}\n")
         return nil unless pos
@@ -62,14 +57,16 @@ module Devise
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
         def authenticate_with_pam(attributes={})
-          if ::Devise::usernamefield && attributes[::Devise::usernamefield].present?
+          if ::Devise::usernamefield
+            return nil unless attributes[::Devise::usernamefield]
             resource = where(::Devise::usernamefield => attributes[::Devise::usernamefield]).first
 
             if resource.blank?
               resource = new
               resource[::Devise::usernamefield] = attributes[::Devise::usernamefield]
             end
-          elsif attributes[::Devise::emailfield].present?
+          elsif ::Devise::emailfield
+            return nil unless attributes[::Devise::emailfield]
             resource = where(::Devise::emailfield => attributes[::Devise::emailfield]).first
 
             if resource.blank?
