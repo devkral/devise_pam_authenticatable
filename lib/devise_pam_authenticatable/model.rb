@@ -27,6 +27,16 @@ module Devise
         end
       end
 
+      def pam_setup(attributes)
+        return unless ::Devise::emailfield
+        self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
+      end
+
+      def password_required?
+        return false if Rpam2.account(get_service, get_pam_name)
+        super
+      end
+
       def get_suffix
         if self.class.instance_variable_defined?("@pam_suffix")
           return self.class.pam_suffix
@@ -35,20 +45,24 @@ module Devise
         end
       end
 
-      def extract_name(email)
-        return nil unless get_suffix
-        email = email+"\n"
-        pos = email.index("@#{get_suffix}\n")
+      def get_pam_name
+        return self[::Devise::usernamefield] if ::Devise::usernamefield && \
+                                                has_attribute?(::Devise::usernamefield) && \
+                                                attribute_present?(::Devise::usernamefield)
+        suffix = get_suffix()
+        return nil unless suffix && has_attribute?(::Devise::emailfield)
+        email = "#{self[::Devise::emailfield]}\n"
+        pos = email.index("@#{suffix}\n")
         if pos
-          email.slice(0, pos)
+          return email.slice(0, pos)
         else
-          nil
+          return nil
         end
       end
 
       # Checks if a resource is valid upon authentication.
-      def valid_pam_authentication?(username, password)
-        Rpam2.auth(get_service, username, password)
+      def valid_pam_authentication?(password)
+        Rpam2.auth(get_service, get_pam_name, password)
       end
 
       module ClassMethods
@@ -61,26 +75,20 @@ module Devise
             if resource.blank?
               resource = new
               resource[::Devise::usernamefield] = attributes[::Devise::usernamefield]
-              resource.password = attributes[:password]
             end
-
-            username = attributes[::Devise::usernamefield]
           elsif attributes[::Devise::emailfield].present?
             resource = where(::Devise::emailfield => attributes[::Devise::emailfield]).first
 
             if resource.blank?
               resource = new
               resource[::Devise::emailfield] = attributes[::Devise::emailfield]
-              resource.password = attributes[:password]
             end
-
-            username = resource.extract_name(attributes[::Devise::emailfield])
           else
             return nil
           end
-          return nil unless username
 
-          if resource.try(:valid_pam_authentication?, username, attributes[:password])
+          if resource.try(:valid_pam_authentication?, attributes[:password])
+            resource.pam_setup(attributes)
             resource.save if resource.new_record?
             return resource
           else
