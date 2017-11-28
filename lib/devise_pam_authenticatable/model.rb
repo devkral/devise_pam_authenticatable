@@ -33,6 +33,7 @@ module Devise
         return unless ::Devise::emailfield && ::Devise::usernamefield
         self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
         self[::Devise::emailfield] = attributes[::Devise::emailfield] if self[::Devise::emailfield].nil?
+        self[::Devise::emailfield] = "#{self[::Devise::usernamefield]}@#{get_suffix}" if self[::Devise::emailfield].nil? && get_suffix
       end
 
       def password_required?
