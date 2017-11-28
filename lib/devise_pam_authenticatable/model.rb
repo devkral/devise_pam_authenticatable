@@ -32,6 +32,7 @@ module Devise
       def pam_setup(attributes)
         return unless ::Devise::emailfield && ::Devise::usernamefield
         self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
+        self[::Devise::emailfield] = attributes[::Devise::emailfield] if self[::Devise::emailfield].nil?
       end
 
       def password_required?
