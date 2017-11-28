@@ -28,13 +28,12 @@ module Devise
       end
 
       def pam_setup(attributes)
-        return unless ::Devise::emailfield
+        return unless ::Devise::emailfield && ::Devise::usernamefield && has_attribute?(::Devise::usernamefield)
         self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
       end
 
       def password_required?
-        return false if Rpam2.account(get_service, get_pam_name)
-        super
+        return false
       end
 
       def get_suffix
