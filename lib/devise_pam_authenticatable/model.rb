@@ -30,7 +30,7 @@ module Devise
       end
 
       def pam_setup(attributes)
-        return unless ::Devise::emailfield && ::Devise::usernamefield && has_attribute?(::Devise::usernamefield)
+        return unless ::Devise::emailfield && ::Devise::usernamefield
         self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
       end
 
@@ -57,8 +57,7 @@ module Devise
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
         def authenticate_with_pam(attributes={})
-          if ::Devise::usernamefield
-            return nil unless attributes[::Devise::usernamefield]
+          if ::Devise::usernamefield && attributes[::Devise::usernamefield]
             resource = where(::Devise::usernamefield => attributes[::Devise::usernamefield]).first
 
             if resource.blank?
@@ -69,9 +68,11 @@ module Devise
             return nil unless attributes[::Devise::emailfield]
             resource = where(::Devise::emailfield => attributes[::Devise::emailfield]).first
 
-            if resource.blank?
+            if resource.blank? && ::Devise::usernamefield.nil?
               resource = new
               resource[::Devise::emailfield] = attributes[::Devise::emailfield]
+            elsif resource.blank?
+              return nil
             end
           else
             return nil

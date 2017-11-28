@@ -49,7 +49,7 @@ Options:
 * config.pam_default_service = "rpam"
 * config.pam_default_suffix = nil # extraction disabled by default
 * config.pam_default_suffix = "pam" # username@pam = username
-* config.emailfield = "email" # set emailfield
+* config.emailfield = "email" # set emailfield, set to nil if not available
 * config.usernamefield = "username" # set to nil to disable username (only email extraction)
 
 References
