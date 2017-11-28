@@ -38,11 +38,8 @@ module Devise
       end
 
       def get_suffix
-        if self.class.instance_variable_defined?("@pam_suffix")
-          return self.class.pam_suffix
-        else
-          return ::Devise::pam_default_suffix
-        end
+        return self.class.pam_suffix if self.class.instance_variable_defined?("@pam_suffix")
+        ::Devise::pam_default_suffix
       end
 
       def get_pam_name
