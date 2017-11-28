@@ -50,11 +50,8 @@ module Devise
         return nil unless suffix && has_attribute?(::Devise::emailfield)
         email = "#{self[::Devise::emailfield]}\n"
         pos = email.index("@#{suffix}\n")
-        if pos
-          return email.slice(0, pos)
-        else
-          return nil
-        end
+        return nil unless pos
+        email.slice(0, pos)
       end
 
       # Checks if a resource is valid upon authentication.
