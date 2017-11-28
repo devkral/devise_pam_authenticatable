@@ -83,7 +83,7 @@ module Devise
           if resource.try(:valid_pam_authentication?, attributes[:password])
             if resource.new_record?
               resource.pam_setup(attributes)
-              resource.save
+              resource.save!
             end
             return resource
           else
