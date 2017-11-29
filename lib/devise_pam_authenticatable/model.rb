@@ -67,7 +67,7 @@ module Devise
 
         def authenticate_with_pam(attributes={})
           if ::Devise::usernamefield && attributes[::Devise::usernamefield]
-            resource = where(::Devise::usernamefield => attributes[::Devise::usernamefield]).first
+            resource = find_by(::Devise::usernamefield => attributes[::Devise::usernamefield])
 
             if resource.blank?
               resource = new
@@ -75,7 +75,7 @@ module Devise
             end
           elsif ::Devise::emailfield
             return nil unless attributes[::Devise::emailfield]
-            resource = where(::Devise::emailfield => attributes[::Devise::emailfield]).first
+            resource = find_by(::Devise::emailfield => attributes[::Devise::emailfield])
 
             if resource.blank? && ::Devise::usernamefield.nil?
               resource = new
