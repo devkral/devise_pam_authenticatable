@@ -51,6 +51,7 @@ Options:
 * config.pam_default_suffix = "pam" # username@pam = username
 * config.emailfield = "email" # set emailfield, set to nil if not available
 * config.usernamefield = "username" # set to nil to disable username (only email extraction)
+* config.check_at_sign = false # detect if email field contains username by @ sign (make sure names cannot contain @ signs)
 
 References
 ----------

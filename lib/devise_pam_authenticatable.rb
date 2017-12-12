@@ -12,6 +12,8 @@ module Devise
   @@emailfield = 'email'
   mattr_accessor :usernamefield
   @@usernamefield = 'username'
+  mattr_accessor :check_at_sign
+  @@check_at_sign = false
 end
 Devise.add_module(:pam_authenticatable,
                   :route => :session,

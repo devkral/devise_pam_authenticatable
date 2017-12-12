@@ -61,20 +61,25 @@ module Devise
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
         def authenticate_with_pam(attributes = {})
-          if ::Devise.usernamefield && attributes[::Devise.usernamefield]
-            resource = where(::Devise.usernamefield => attributes[::Devise.usernamefield]).first
+          if ::Devise.usernamefield && attributes[:username]
+            resource = where(::Devise.usernamefield => attributes[:username]).first
 
             if resource.blank?
               resource = new
-              resource[::Devise.usernamefield] = attributes[::Devise.usernamefield]
+              resource[::Devise.usernamefield] = attributes[:username]
             end
           elsif ::Devise.emailfield
-            return nil unless attributes[::Devise.emailfield]
-            resource = where(::Devise.emailfield => attributes[::Devise.emailfield]).first
+            return nil unless attributes[:email]
+            resource = where(::Devise.emailfield => attributes[:email]).first
 
             if resource.blank?
               resource = new
-              resource[::Devise.emailfield] = attributes[::Devise.emailfield]
+              if ::Devise.check_at_sign && ::Devise.usernamefield && attributes[:email].index('@').nil?
+                # use email as username
+                resource[::Devise.usernamefield] = attributes[:email]
+              else
+                resource[::Devise.emailfield] = attributes[:email]
+              end
             end
           else
             return nil
