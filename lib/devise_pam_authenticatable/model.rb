@@ -10,26 +10,21 @@ module Devise
         end
       end
 
-      def self.required_fields(klass)
+      def self.required_fields(_klass)
         []
       end
 
-      # Set password to nil
-      def clean_up_passwords
-        self.password = nil
-      end
-
       def get_service
-        return self.class.pam_service if self.class.instance_variable_defined?("@pam_service")
-        ::Devise::pam_default_service
+        return self.class.pam_service if self.class.instance_variable_defined?('@pam_service')
+        ::Devise.pam_default_service
       end
 
       def get_suffix
-        return self.class.pam_suffix if self.class.instance_variable_defined?("@pam_suffix")
-        ::Devise::pam_default_suffix
+        return self.class.pam_suffix if self.class.instance_variable_defined?('@pam_suffix')
+        ::Devise.pam_default_suffix
       end
 
-      def pam_on_filled_pw(attributes)
+      def pam_on_filled_pw(_attributes)
         # use blank password as discriminator between traditional login and pam login?
         # to disable login with pam return nil elsewise return a (different?) user object
         # as default assume there is no conflict and return user object
@@ -37,21 +32,21 @@ module Devise
       end
 
       def pam_setup(attributes)
-        return unless ::Devise::emailfield && ::Devise::usernamefield
-        self[::Devise::emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], "email", false)
-        self[::Devise::emailfield] = attributes[::Devise::emailfield] if self[::Devise::emailfield].nil?
-        self[::Devise::emailfield] = "#{self[::Devise::usernamefield]}@#{get_suffix}" if self[::Devise::emailfield].nil? && get_suffix
+        return unless ::Devise.emailfield && ::Devise.usernamefield
+        self[::Devise.emailfield] = Rpam2.getenv(get_service, get_pam_name, attributes[:password], 'email', false)
+        self[::Devise.emailfield] = attributes[::Devise.emailfield] if self[::Devise.emailfield].nil?
+        self[::Devise.emailfield] = "#{self[::Devise.usernamefield]}@#{get_suffix}" if self[::Devise.emailfield].nil? && get_suffix
       end
 
       def password_required?
-        return false
+        false
       end
 
       def get_pam_name
-        return self[::Devise::usernamefield] if ::Devise::usernamefield
-        suffix = get_suffix()
-        return nil unless suffix && ::Devise::emailfield
-        email = "#{self[::Devise::emailfield]}\n"
+        return self[::Devise.usernamefield] if ::Devise.usernamefield && self[::Devise.usernamefield]
+        suffix = get_suffix
+        return nil unless suffix && ::Devise.emailfield
+        email = "#{self[::Devise.emailfield]}\n"
         pos = email.index("@#{suffix}\n")
         return nil unless pos
         email.slice(0, pos)
@@ -65,23 +60,21 @@ module Devise
       module ClassMethods
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
-        def authenticate_with_pam(attributes={})
-          if ::Devise::usernamefield && attributes[::Devise::usernamefield]
-            resource = find_by(::Devise::usernamefield => attributes[::Devise::usernamefield])
+        def authenticate_with_pam(attributes = {})
+          if ::Devise.usernamefield && attributes[::Devise.usernamefield]
+            resource = where(::Devise.usernamefield => attributes[::Devise.usernamefield]).first
 
             if resource.blank?
               resource = new
-              resource[::Devise::usernamefield] = attributes[::Devise::usernamefield]
+              resource[::Devise.usernamefield] = attributes[::Devise.usernamefield]
             end
-          elsif ::Devise::emailfield
-            return nil unless attributes[::Devise::emailfield]
-            resource = find_by(::Devise::emailfield => attributes[::Devise::emailfield])
+          elsif ::Devise.emailfield
+            return nil unless attributes[::Devise.emailfield]
+            resource = where(::Devise.emailfield => attributes[::Devise.emailfield]).first
 
-            if resource.blank? && ::Devise::usernamefield.nil?
+            if resource.blank?
               resource = new
-              resource[::Devise::emailfield] = attributes[::Devise::emailfield]
-            elsif resource.blank?
-              return nil
+              resource[::Devise.emailfield] = attributes[::Devise.emailfield]
             end
           else
             return nil
@@ -90,15 +83,12 @@ module Devise
           # potential conflict detected
           resource = resource.pam_on_filled_pw(attributes) unless resource.password.blank?
 
-          if resource && resource.try(:valid_pam_authentication?, attributes[:password])
-            if resource.new_record?
-              resource.pam_setup(attributes)
-              resource.save!
-            end
-            return resource
-          else
-            return nil
+          return nil unless resource && resource.try(:valid_pam_authentication?, attributes[:password])
+          if resource.new_record?
+            resource.pam_setup(attributes)
+            resource.save!
           end
+          resource
         end
       end
     end
