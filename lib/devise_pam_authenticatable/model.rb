@@ -86,7 +86,7 @@ module Devise
           end
 
           # potential conflict detected
-          resource = resource.pam_on_filled_pw(attributes) unless resource.password.blank?
+          resource = resource.pam_on_filled_pw(attributes) if resource.password.present?
 
           return nil unless resource && resource.try(:valid_pam_authentication?, attributes[:password])
           if resource.new_record?
