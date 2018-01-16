@@ -43,15 +43,16 @@ module Devise
       end
 
       # Checks if a resource is valid upon authentication.
-      def valid_pam_authentication?(password)
-        return nil unless password && get_service && get_pam_name
-        Rpam2.auth(get_service, get_pam_name, password)
+      def valid_pam_authentication?(pw)
+        return nil unless get_pam_name
+        Rpam2.auth(get_service, get_pam_name, pw)
       end
 
       module ClassMethods
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
         def authenticate_with_pam(attributes = {})
+          return nil unless attributes[:password]
           if ::Devise.usernamefield && attributes[:username]
             resource = find_by(::Devise.usernamefield => attributes[:username])
 
