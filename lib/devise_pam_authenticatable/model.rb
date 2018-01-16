@@ -54,6 +54,7 @@ module Devise
 
       # Checks if a resource is valid upon authentication.
       def valid_pam_authentication?(password)
+        return nil unless password
         Rpam2.auth(get_service, get_pam_name, password)
       end
 
@@ -62,7 +63,7 @@ module Devise
 
         def authenticate_with_pam(attributes = {})
           if ::Devise.usernamefield && attributes[:username]
-            resource = where(::Devise.usernamefield => attributes[:username]).first
+            resource = find_by(::Devise.usernamefield => attributes[:username])
 
             if resource.blank?
               resource = new
@@ -70,7 +71,7 @@ module Devise
             end
           elsif ::Devise.emailfield
             return nil unless attributes[:email]
-            resource = where(::Devise.emailfield => attributes[:email]).first
+            resource = find_by(::Devise.emailfield => attributes[:email])
 
             if resource.blank?
               resource = new
