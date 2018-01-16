@@ -3,12 +3,6 @@ require 'devise_pam_authenticatable/strategy'
 module Devise
   module Models
     module PamAuthenticatable
-      def included(base)
-        base.class_eval do
-          extend ClassMethods
-          attr_accessor :password
-        end
-      end
 
       def get_service
         return self.class.pam_service if self.class.instance_variable_defined?('@pam_service')
@@ -50,7 +44,7 @@ module Devise
 
       # Checks if a resource is valid upon authentication.
       def valid_pam_authentication?(password)
-        return nil unless password
+        return nil unless password && get_service && get_pam_name
         Rpam2.auth(get_service, get_pam_name, password)
       end
 
@@ -83,7 +77,7 @@ module Devise
           end
 
           # potential conflict detected
-          resource = resource.pam_on_filled_pw(attributes) if resource.password.present?
+          resource = resource.pam_on_filled_pw(attributes) if resource['password'] && resource.password.present?
 
           return nil unless resource && resource.try(:valid_pam_authentication?, attributes[:password])
           if resource.new_record?
