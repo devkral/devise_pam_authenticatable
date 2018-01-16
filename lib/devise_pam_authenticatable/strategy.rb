@@ -7,7 +7,7 @@ class Devise::Strategies::PamAuthenticatable < Devise::Strategies::Authenticatab
   end
 
   def authenticate!
-    if (resource = mapping.to.authenticate_with_pam(params[scope]))
+    if (resource = mapping.to.authenticate_with_pam(params[scope].clone))
       success!(resource)
     else
       fail(:invalid)

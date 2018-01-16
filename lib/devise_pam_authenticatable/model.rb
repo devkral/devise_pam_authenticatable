@@ -3,16 +3,6 @@ require 'devise_pam_authenticatable/strategy'
 module Devise
   module Models
     module PamAuthenticatable
-      def self.included(base)
-        base.class_eval do
-          extend ClassMethods
-          attr_accessor :password
-        end
-      end
-
-      def self.required_fields(_klass)
-        []
-      end
 
       def get_service
         return self.class.pam_service if self.class.instance_variable_defined?('@pam_service')
