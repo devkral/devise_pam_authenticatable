@@ -3,8 +3,11 @@ require 'devise_pam_authenticatable/strategy'
 module Devise
   module Models
     module PamAuthenticatable
-      included do
-        attr_accessor :password
+      def included(base)
+        base.class_eval do
+          extend ClassMethods
+          attr_accessor :password
+        end
       end
 
       def get_service
