@@ -23,6 +23,12 @@ Or, to use the latest from github:
 
     gem "devise_pam_authenticatable2", :git => "git://github.com/devkral/devise_pam_authenticatable2.git"
 
+Important changes
+-----------------
+
+Versions before 4.0.0 are limitted compatible with database_authenticatable.
+Some removed code may can clash in earlier versions.
+
 Setup
 -----
 
@@ -62,4 +68,3 @@ References
 
 Released under the MIT license
 
-Copyright (c) 2011 James Wilson, LithiumCorp Pty Ltd
