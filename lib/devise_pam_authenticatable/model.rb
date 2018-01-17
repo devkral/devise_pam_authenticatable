@@ -21,8 +21,8 @@ module Devise
       end
 
       def is_pam_conflict
-        # use blank password as discriminator between traditional login and pam login?
-        is_pam_account && resource.respond_to?('password') && resource.password.present?
+        # use blank password as discriminator between traditional login and pam login
+        resource.respond_to?('password') && resource.password.present? && is_pam_account
       end
 
       def is_pam_account
