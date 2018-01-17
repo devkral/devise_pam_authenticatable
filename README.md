@@ -29,6 +29,8 @@ Important changes
 Versions before 4.0.0 are limitted compatible with database_authenticatable.
 Some removed code may can clash in earlier versions.
 
+Version 5.0.0 change method names. Check if everything is correct.
+
 Setup
 -----
 
@@ -67,4 +69,3 @@ References
 
 
 Released under the MIT license
-
