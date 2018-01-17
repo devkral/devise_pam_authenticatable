@@ -29,7 +29,7 @@ Important changes
 Versions before 4.0.0 are limitted compatible with database_authenticatable.
 Some removed code may can clash in earlier versions.
 
-Version 6.0.0 (and 5.0.0) change method names. Check if everything is correct.
+Version 7.0.0 (and 5, 6) change method names. Check if everything is correct.
 
 Setup
 -----
