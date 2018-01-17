@@ -66,7 +66,7 @@ module Devise
             end
             return resource
           elsif ::Devise.emailfield && attributes[:email]
-            if ::Devise.check_at_sign && ::Devise.usernamefield && attributes[:email].index('@').nil?
+            if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
               resource = find_by(::Devise.usernamefield => attributes[:email])
             else
               resource = find_by(::Devise.emailfield => attributes[:email])
@@ -74,7 +74,7 @@ module Devise
 
             if resource.blank?
               resource = new
-              if ::Devise.check_at_sign && ::Devise.usernamefield && attributes[:email].index('@').nil?
+              if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
                 # use email as username
                 resource[::Devise.usernamefield] = attributes[:email]
               else
