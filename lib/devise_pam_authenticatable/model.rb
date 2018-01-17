@@ -67,11 +67,11 @@ module Devise
             resource
           elsif ::Devise.emailfield && attributes[:email]
             resource =
-            if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
-              find_by(::Devise.usernamefield => attributes[:email])
-            else
-              find_by(::Devise.emailfield => attributes[:email])
-            end
+              if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
+                find_by(::Devise.usernamefield => attributes[:email])
+              else
+                find_by(::Devise.emailfield => attributes[:email])
+              end
 
             if resource.blank?
               resource = new
