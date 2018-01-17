@@ -14,11 +14,20 @@ module Devise
         ::Devise.pam_default_suffix
       end
 
-      def pam_on_filled_pw(_attributes)
-        # use blank password as discriminator between traditional login and pam login?
+      def on_pam_conflict(_attributes)
         # to disable login with pam return nil elsewise return a (different?) user object
-        # as default assume there is no conflict and return user object
+        # as default assume there is never a conflict and return user object
         self
+      end
+
+      def is_pam_conflict
+        # use blank password as discriminator between traditional login and pam login?
+        is_pam_account && resource.respond_to?('password') && resource.password.present?
+      end
+
+      def is_pam_account
+        return false unless get_pam_name
+        Rpam2.account(get_service, get_pam_name)
       end
 
       def pam_setup(attributes)
@@ -78,7 +87,7 @@ module Devise
           end
 
           # potential conflict detected
-          resource = resource.pam_on_filled_pw(attributes) if resource.respond_to?('password') && resource.password.present?
+          resource = resource.on_pam_conflict(attributes) if resource.is_pam_conflict
 
           return nil unless resource && resource.try(:valid_pam_authentication?, attributes[:password])
           if resource.new_record?
