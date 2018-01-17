@@ -15,12 +15,14 @@ module Devise
       end
 
       def pam_conflict(_attributes)
+        # solve conflict between other and pam related user accounts
         # to disable login with pam return nil elsewise return a (different?) user object
-        # as default assume there is never a conflict and return user object
+        # as default assume there is never a conflict and return user object unchanged
         self
       end
 
       def pam_conflict?
+        # detect a conflict
         # use blank password as discriminator between traditional login and pam login
         resource.respond_to?('password') && resource.password.present? && is_pam_account?
       end
