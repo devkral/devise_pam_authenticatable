@@ -62,7 +62,7 @@ module Devise
       module ClassMethods
         Devise::Models.config(self, :pam_service, :pam_suffix)
 
-        def pam_find_user(attributes = {})
+        def pam_get_user(attributes = {})
           if ::Devise.usernamefield && attributes[:username]
             resource = find_by(::Devise.usernamefield => attributes[:username])
 
@@ -94,7 +94,7 @@ module Devise
         def authenticate_with_pam(attributes = {})
           return nil unless attributes[:password]
 
-          return nil unless (resource = pam_find_user(attributes))
+          return nil unless (resource = pam_get_user(attributes))
 
           # potential conflict detected
           resource = resource.pam_conflict(attributes) if resource.pam_conflict?
