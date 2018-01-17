@@ -4,19 +4,19 @@ module Devise
   module Models
     module PamAuthenticatable
 
-      def get_pam_service
+      def pam_get_service
         return self.class.pam_service if self.class.instance_variable_defined?('@pam_service')
         ::Devise.pam_default_service
       end
 
-      def get_pam_suffix
+      def pam_get_suffix
         return self.class.pam_suffix if self.class.instance_variable_defined?('@pam_suffix')
         ::Devise.pam_default_suffix
       end
 
-      def get_pam_name
+      def pam_get_name
         return self[::Devise.usernamefield] if ::Devise.usernamefield && self[::Devise.usernamefield]
-        return nil unless ::Devise.emailfield && (suffix = get_pam_suffix)
+        return nil unless ::Devise.emailfield && (suffix = pam_get_suffix)
         email = "#{self[::Devise.emailfield]}\n"
         pos = email.index("@#{suffix}\n")
         return nil unless pos
@@ -24,8 +24,8 @@ module Devise
       end
 
       def is_pam_account?
-        return false unless get_pam_name
-        Rpam2.account(get_pam_service, get_pam_name)
+        return false unless pam_get_name
+        Rpam2.account(pam_get_service, pam_get_name)
       end
 
       def pam_conflict?
@@ -43,15 +43,15 @@ module Devise
 
       def pam_setup(attributes)
         return unless ::Devise.emailfield && ::Devise.usernamefield
-        self[::Devise.emailfield] = Rpam2.getenv(get_pam_service, get_pam_name, attributes[:password], 'email', false)
+        self[::Devise.emailfield] = Rpam2.getenv(pam_get_service, pam_get_name, attributes[:password], 'email', false)
         self[::Devise.emailfield] = attributes[::Devise.emailfield] if self[::Devise.emailfield].nil?
-        self[::Devise.emailfield] = "#{self[::Devise.usernamefield]}@#{get_pam_suffix}" if self[::Devise.emailfield].nil? && get_pam_suffix
+        self[::Devise.emailfield] = "#{self[::Devise.usernamefield]}@#{pam_get_suffix}" if self[::Devise.emailfield].nil? && pam_get_suffix
       end
 
       # Checks if a resource is valid upon authentication.
       def valid_pam_authentication?(pw)
-        return nil unless get_pam_name
-        Rpam2.auth(get_pam_service, get_pam_name, pw)
+        return nil unless pam_get_name
+        Rpam2.auth(pam_get_service, pam_get_name, pw)
       end
 
       module ClassMethods
@@ -64,7 +64,7 @@ module Devise
             if resource.blank?
               resource = new(::Devise.usernamefield => attributes[:username])
             end
-            return resource
+            resource
           elsif ::Devise.emailfield && attributes[:email]
             if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
               resource = find_by(::Devise.usernamefield => attributes[:email])
@@ -81,7 +81,7 @@ module Devise
                 resource[::Devise.emailfield] = attributes[:email]
               end
             end
-            return resource
+            resource
           end
         end
 
