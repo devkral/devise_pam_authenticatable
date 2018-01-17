@@ -62,8 +62,7 @@ module Devise
             resource = find_by(::Devise.usernamefield => attributes[:username])
 
             if resource.blank?
-              resource = new
-              resource[::Devise.usernamefield] = attributes[:username]
+              resource = new(::Devise.usernamefield => attributes[:username])
             end
             return resource
           elsif ::Devise.emailfield && attributes[:email]
