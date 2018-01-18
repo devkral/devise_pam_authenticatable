@@ -19,7 +19,7 @@ module Devise
         return nil unless ::Devise.emailfield && (suffix = find_pam_suffix)
         email = "#{self[::Devise.emailfield]}\n"
         pos = email.index("@#{suffix}\n")
-        return nil unless pos
+        return nil if !pos || email.count('\n') > 1
         email.slice(0, pos)
       end
 
