@@ -31,7 +31,7 @@ module Devise
       def pam_conflict?
         # detect a conflict
         # use blank password as discriminator between traditional login and pam login
-        respond_to?('password') && password.present? && is_pam_account?
+        respond_to?('encrypted_password') && encrypted_password.present? && is_pam_account?
       end
 
       def pam_conflict(_attributes)
