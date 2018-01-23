@@ -17,8 +17,11 @@ module Devise
       def pam_get_name
         return self[::Devise.usernamefield] if ::Devise.usernamefield && self[::Devise.usernamefield]
         return nil unless ::Devise.emailfield && (suffix = find_pam_suffix)
+        # Regex is vulnerable to DOS attacks, use newline instead
         email = "#{self[::Devise.emailfield]}\n"
         pos = email.index("@#{suffix}\n")
+        # deceptive emailaddresses use newlines, so check this here
+        # and return nil in case another newline is found.
         return nil if !pos || email.count('\n') > 1
         email.slice(0, pos)
       end
