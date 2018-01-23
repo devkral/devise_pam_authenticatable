@@ -3,10 +3,12 @@ Devise - PAM Authentication
 
 devise\_pam\_authenticatable is a Devise (http://github.com/plataformatec/devise)
 extension for authenticating using PAM (Pluggable Authentication Modulues)
-via the rpam gem.
+via the rpam2 gem.
 
 This allows you to authenticate against the local hosts authentication
 system including local account usernames and passwords.
+
+Or use LDAP and other PAM modules for LDAP authentication.
 
 There are obvious security risks with using PAM authentication via a
 web-based application. Make sure you at least use SSL to keep usernames and
@@ -41,7 +43,7 @@ In your Devise model, ensure the following is present:
 
     class User < ActiveRecord::Base
 
-      devise :pam_authenticatable, pam_service: "system-auth", pam_suffix: "foo"
+      devise :pam_authenticatable, pam_service: 'system-auth', pam_suffix: 'pamlogin'
 
       # in case there is no password set by other devise modules:
       attr_accessor :password
@@ -55,9 +57,9 @@ In your Devise model, ensure the following is present:
 
     end
 
-pam_service: "system-auth" is optional. By default the pam service specified in config.pam_default_service is used.
+pam_service: 'system-auth' is optional. By default the pam service specified in config.pam_default_service is used.
 
-pam_suffix: "foo" is optional. By default the pam email extraction suffix specified in config.pam_default_suffix is used.
+pam_suffix: 'pamlogin' is optional. By default the pam email extraction suffix specified in config.pam_default_suffix is used.
 
 Options:
 
