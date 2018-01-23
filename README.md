@@ -43,8 +43,9 @@ In your Devise model, ensure the following is present:
 
       devise :pam_authenticatable, pam_service: "system-auth", pam_suffix: "foo"
 
-      # Setup accessible (or protected) attributes for your model
-      attr_accessible :password, :<username or email field>
+      # in case there is no password set by other devise modules:
+      attr_accessor :password
+      @password = nil
 
     end
 
