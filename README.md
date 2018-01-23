@@ -47,6 +47,12 @@ In your Devise model, ensure the following is present:
       attr_accessor :password
       @password = nil
 
+      # in case other devise modules complain about missing password
+      # and the password is not mirrored
+      def password_required?
+        false
+      end
+
     end
 
 pam_service: "system-auth" is optional. By default the pam service specified in config.pam_default_service is used.
