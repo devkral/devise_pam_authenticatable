@@ -26,7 +26,7 @@ module Devise
         email.slice(0, pos)
       end
 
-      def is_pam_account?
+      def pam_managed_user?
         return false unless pam_get_name
         Rpam2.account(find_pam_service, pam_get_name)
       end
@@ -34,7 +34,7 @@ module Devise
       def pam_conflict?
         # detect a conflict
         # use blank password as discriminator between traditional login and pam login
-        respond_to?('encrypted_password') && encrypted_password.present? && is_pam_account?
+        respond_to?('encrypted_password') && encrypted_password.present? && pam_managed_user?
       end
 
       def pam_conflict(_attributes)

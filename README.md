@@ -33,6 +33,8 @@ Some removed code may can clash in earlier versions.
 
 Version 5-8 change method names. Check if everything is correct. Sorry for the quick release cycle.
 
+In version 9 is_pam_account? is changed to pam_managed_user? because some linters hate the former name. pam_account? was not an option as it clashes too easily with some table names
+
 Setup
 -----
 
