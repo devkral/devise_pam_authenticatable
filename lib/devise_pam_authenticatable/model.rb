@@ -78,9 +78,15 @@ module Devise
 
             if resource.blank?
               resource = new
-              if ::Devise.check_at_sign && ::Devise.usernamefield && !attributes[:email].index('@')
-                # use email as username
-                resource[::Devise.usernamefield] = attributes[:email]
+              if ::Devise.check_at_sign && !attributes[:email].index('@')
+                if ::Devise.usernamefield
+                  # use email as username
+                  resource[::Devise.usernamefield] = attributes[:email]
+                end
+                if (email = Rpam2.getenv(resource.find_pam_service, attributes[:email], attributes[:password], 'email', false))
+                  # set email if found in pam
+                  resource[::Devise.emailfield] = email
+                end
               else
                 resource[::Devise.emailfield] = attributes[:email]
               end
