@@ -33,7 +33,7 @@ begin
     gemspec.license = "MIT"
     gemspec.authors = ["James Wilson", "Alexander Kaftan"]
     gemspec.add_runtime_dependency "devise", ">= 4.0.0"
-    gemspec.add_runtime_dependency "rpam2", "~> 3.0"
+    gemspec.add_runtime_dependency "rpam2", "~> 4.0"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
