@@ -22,7 +22,8 @@ module Devise
         pos = email.index("@#{suffix}\n")
         # deceptive emailaddresses use newlines, so check this here
         # and return nil in case another newline is found.
-        return nil if !pos || email.count('\n') > 1
+        # warning: don't try to optimize with '' \n. Escapes doesn't work in ''
+        return nil if !pos || email.count("\n") > 1
         email.slice(0, pos)
       end
 
