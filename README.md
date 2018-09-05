@@ -35,6 +35,8 @@ Version 5-8 change method names. Check if everything is correct. Sorry for the q
 
 In version 9 is_pam_account? is changed to pam_managed_user? because some linters hate the former name.
 
+In version 9.2 pam_authentication must support a second argument (request). Only relevant if overwritten. Adds feature: pam gets now the remote ip address of the client as RHOST
+
 Setup
 -----
 
