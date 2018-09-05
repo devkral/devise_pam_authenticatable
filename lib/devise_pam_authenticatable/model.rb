@@ -53,9 +53,10 @@ module Devise
       end
 
       # Checks if a resource is valid upon authentication.
-      def pam_authentication(pw)
+      def pam_authentication(pw, request = nil)
         return nil unless pam_get_name
-        Rpam2.auth(find_pam_service, pam_get_name, pw)
+        rhost = request.remote_ip if request rescue nil
+        Rpam2.auth(find_pam_service, pam_get_name, pw, nil, rhost)
       end
 
       module ClassMethods
@@ -104,7 +105,7 @@ module Devise
           # potential conflict detected
           resource = resource.pam_conflict(attributes) if resource.pam_conflict?
 
-          return nil unless resource && resource.try(:pam_authentication, attributes[:password])
+          return nil unless resource && resource.try(:pam_authentication, attributes[:password], attributes[:request])
           if resource.new_record?
             resource.pam_setup(attributes)
             resource.save!
